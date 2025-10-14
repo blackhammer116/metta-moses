@@ -78,6 +78,46 @@
                          (Cons A (Cons B (Cons O Nil)))))
 
 
+(= (hillClimbing $POASet $tTableBscorer $centerInst $scorer) 
+  (case $scorer
+    (
+      (applyComplexityBasedScore
+        (let*
+          (
+            ($disc (getDisk $POASet))
+            (($cpxCoeff $size $iTable) (getTTableParams $tTableBscorer))
+          )
+          (hillClimbing (1 3 0) (False False False $centerInst (worstCscore) (* -1 (pow-math 10 308)) 0 0 1) 
+                        $POASet
+                        ($disc $cpxCoeff $size $iTable)
+                        $centerInst
+                        estimateNeighborhood crossover 
+                        sampleNewInstances transform)
+        )
+        ; (hillClimbing (1 3 0) (False False False $centerInst (worstCscore) (* -1 (pow-math 10 308)) 0 0 1) $deme $tTableBscorer $centerInst
+            ; estimateNeighborhood crossover sampleNewInstances transform)
+            ) ;; passing also the helper functions
+      (applyMutualInformationBasedScore
+        (let*
+          (
+            (($rows $labels) (getITableParams $tTableBScorer))
+          )
+          (hillClimbingFs (3 3 1) (False False False $centerInst 0 0 0 0 1) 
+              $instSet 
+              ($labels $rows () ())
+              $centerInst
+              estimateNeighborhoodFs crossoverFs 
+              sampleNewInstancesFs transformFs
+          )
+        )
+        ; (hillClimbingFs (3 3 1) (False False False $centerInst 0 0 0 0 1) $instSet $iTable $centerInst
+        ;     estimateNeighborhoodFs crossoverFs sampleNewInstancesFs transformFs
+        ; )
+        )
+    )
+  )
+  ; (hillClimbing (1 3 0) (False False False $centerInst (worstCscore) (* -1 (pow-math 10 308)) 0 0 1) $deme $tTableBscorer $centerInst)) (
+)
 
 
 
