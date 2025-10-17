@@ -85,8 +85,11 @@
 (= (sampleFromNeighborhood` $n $dist (mkKbMap (mkDscKbMp $itDiscKnob) (mkDscMp $disc)) (mkInst $centralInst))
         (let* 
             (
+              (() (println! (Inside sampleFromNeighborhood`: $n $dist $centralInst)))
               ($knobLen (MultiMap.length $disc)) 
+              (() (println! (knob length: $knobLen)))
               ($instLen (List.length $centralInst))
+              (() (println! (instance length: $instLen)))
               ) 
               (if (== $knobLen $instLen) 
                   (let* (
@@ -181,14 +184,12 @@
            (let $generatedInstance (sampleFromNeighborhood` $sampleSize $dist $kbMp $inst)
                            (if (isMember $generatedInstance $expr)
                                (selectUnique $expr $sampleSize $dist $kbMp $inst)
-                               (selectUnique (concatT  ($generatedInstance) $expr )(- $sampleSize 1) $dist $kbMp $inst)
-                            )
-                   
-              )
-                
-           )  
-       )
-   ) 
+                               (selectUnique (concatT ($generatedInstance) $expr ) (- $sampleSize 1) $dist $kbMp $inst)
+                            )        
+            )  
+        )  
+      )
+    )
 
 ;; similar to the above 'sampleFromNeighborhood' but with slight modification to make it compatible with the feature selection
 ;; uses the sampleFromNeighborhoodFs` function to sample from the neighborhood
@@ -306,15 +307,20 @@
          (if (> (* 2 $numNewInstances) $totalNeighbors)
              (countNeighborhood $kbMp $centerInst $dist $numNewInstances)
              $totalNeighbors))
+    (() (println! (Updated Total Neighbors: $updatedTotalNeighbors)))
     ($updatedNumNewInstances 
          (if (< $numNewInstances $updatedTotalNeighbors)  
              $numNewInstances
              $updatedTotalNeighbors))
+    (() (println! (Updated Num New Instances: $updatedNumNewInstances)))
     ($newInstances (if (< $numNewInstances $updatedTotalNeighbors)
                        (sampleFromNeighborhood $numNewInstances $dist $kbMp $centerInst)
                        (generateAllInNeighborhood (mkMultip 3) $centerInst $dist)))
+    (() (println! (New Instances: $newInstances)))
     ($scoredNewInstances (List.map initInstScore $newInstances))
+    (() (println! (Scored New Instances: $scoredNewInstances)))
     ($updatedInstList (List.concat $instList $scoredNewInstances))
+    (() (println! (Updated Instance List: $updatedInstList)))
  )
  ((mkDeme (mkRep $kbMp $tree) (mkSInstSet $updatedInstList) $demeId) $updatedNumNewInstances)))
 
